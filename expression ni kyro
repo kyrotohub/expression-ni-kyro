@@ -59,7 +59,7 @@ public class Expressionnikyro {
         return postfix.toString();
     }
 
-    // ✅ CORRECT INFIX TO PREFIX
+
     static String infixToPrefix(String infix) {
         Stack<Character> operators = new Stack<>();
         Stack<String> operands = new Stack<>();
