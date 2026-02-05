@@ -1,0 +1,79 @@
+package com.mycompany.expressionnikyro;
+
+import java.util.Scanner;
+import java.util.Stack;
+
+public class Expressionnikyro {
+
+    static int precedence(char ch) {
+        switch (ch) {
+            case '+':
+            case '-':
+                return 1;
+            case '*':
+            case '/':
+                return 2;
+            case '^':
+                return 3;
+        }
+        return -1;
+    }
+
+    static String infixToPostfix(String infix) {
+        Stack<Character> stack = new Stack<>();
+        StringBuilder postfix = new StringBuilder();
+
+        for (char ch : infix.toCharArray()) {
+            if (Character.isLetterOrDigit(ch)) {
+                postfix.append(ch);
+            } else if (ch == '(') {
+                stack.push(ch);
+            } else if (ch == ')') {
+                while (!stack.isEmpty() && stack.peek() != '(') {
+                    postfix.append(stack.pop());
+                }
+                stack.pop();
+            } else {
+                while (!stack.isEmpty() &&
+                        precedence(ch) <= precedence(stack.peek())) {
+                    postfix.append(stack.pop());
+                }
+                stack.push(ch);
+            }
+        }
+
+        while (!stack.isEmpty()) {
+            postfix.append(stack.pop());
+        }
+
+        return postfix.toString();
+    }
+
+    static String infixToPrefix(String infix) {
+        StringBuilder reversed = new StringBuilder(infix).reverse();
+
+        for (int i = 0; i < reversed.length(); i++) {
+            if (reversed.charAt(i) == '(') {
+                reversed.setCharAt(i, ')');
+            } else if (reversed.charAt(i) == ')') {
+                reversed.setCharAt(i, '(');
+            }
+        }
+
+        String postfix = infixToPostfix(reversed.toString());
+        return new StringBuilder(postfix).reverse().toString();
+    }
+
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+
+        System.out.print("Enter INFIX expression: ");
+        String infix = sc.nextLine().replaceAll("\\s+", "");
+
+        System.out.println("\nINFIX   : " + infix);
+        System.out.println("POSTFIX : " + infixToPostfix(infix));
+        System.out.println("PREFIX  : " + infixToPrefix(infix));
+
+        sc.close();
+    }
+}
